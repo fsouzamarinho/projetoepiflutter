@@ -15,6 +15,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _email.clear();
+    _password.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Logar>(builder: (context, logar, _) {
@@ -34,39 +42,41 @@ class _HomePageState extends State<HomePage> {
                   controller: _email,
                   hint: 'Digite seu e-mail',
                   tipo: TextInputType.emailAddress),
-                 customTextField(
+              customTextField(
                   title: 'Senha',
                   controller: _password,
                   hint: 'Digite sua senha',
                   tipo: TextInputType.visiblePassword,
                   funcao: (value) {
-                  logar.validatePassword(value);
-                }),
-                if (logar.msgError.isNotEmpty)
+                    logar.validatePassword(value);
+                  }),
+              if (logar.msgError.isNotEmpty)
                 Text(
                   logar.msgError,
                   style: const TextStyle(color: Colors.red),
                 ),
               customButton(
-                text: 'Login',
-                tap: () {
-                  if (_email.text.isEmpty || _password.text.isEmpty) {
-                    showMessage(
-                        message: "Todos os campos são requiridos",
-                        context: context);
-                  } else {
-                    logar.logarUsuario(_email.text, _password.text, 0);
-                    if (logar.logado) {
-                      Navigator.of(context).pushNamed('/dashboard');
-                    } else {
+                  text: 'Login',
+                  tap: () async {
+                    if (_email.text.isEmpty || _password.text.isEmpty) {
                       showMessage(
-                          message: "Usuário ou senha inválidos",
+                          message: "Todos os campos são requiridos",
                           context: context);
+                    } else {
+                      await logar.logarUsuario(_email.text, _password.text, 0);
+                      if (logar.logado) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pushNamed('/dashboard');
+                      } else {
+                        showMessage(
+                            message: "Usuário ou senha inválidos",
+                            // ignore: use_build_context_synchronously
+                            context: context);
+                      }
                     }
-                  }
-                },
-                context: context,
-              ),
+                  },
+                  context: context,
+                  status: logar.carregando),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed('/cadastro');

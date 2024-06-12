@@ -7,10 +7,12 @@ class Logar extends ChangeNotifier {
   bool _valido = false;
   bool _logado = false;
   String _msgError = '';
+  bool _carregando = false;
 
   bool get ehvalido => _valido;
   bool get logado => _logado;
   String get msgError => _msgError;
+  bool get carregando => _carregando;
 
   void validatePassword(String password) {
     _msgError = '';
@@ -30,16 +32,23 @@ class Logar extends ChangeNotifier {
     notifyListeners();
   }
 
-//Criar usuário
+//Logar usuário
   Future logarUsuario(String email, String password, int cpf) async {
+    _carregando = true;
+    notifyListeners();
+
     String url = '${AppUrl.baseUrl}api/Usuario/Login';
-   debugPrint(url);
+    debugPrint(url);
+
+  
 
     Map<String, dynamic> requestBody = {
       'email': email,
       'password': password,
       'cpf': cpf,
     };
+
+    debugPrint(requestBody.toString());
 
     http.Response response = await http.post(
       Uri.parse(url),
@@ -49,12 +58,17 @@ class Logar extends ChangeNotifier {
       body: jsonEncode(requestBody),
     );
 
-    if (response.statusCode == 200) {
+    _carregando = false;
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
       _logado = true;
       notifyListeners();
-    } else {
+    } else if(response.statusCode == 400) {
       _logado = false;
       notifyListeners();
     }
+
   }
+  
+  
 }

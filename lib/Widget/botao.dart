@@ -3,6 +3,7 @@ import 'package:projetoepi/Style/colors.dart';
 
 Widget customButton({
   VoidCallback? tap,
+  bool? status = false,
   String? text,
   BuildContext? context,
 }) {
@@ -11,13 +12,13 @@ Widget customButton({
     child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: TextButton(
-          onPressed: tap,
+          onPressed: status == false ? tap : null,
           style: TextButton.styleFrom(
             backgroundColor: primaryColor,
             padding: const EdgeInsets.all(16.0),
           ),
           child: Text(
-            text!,
+            status == false ? text! : 'Aguarde...',
             style: TextStyle(
               fontSize: 20.0,
               color: white,

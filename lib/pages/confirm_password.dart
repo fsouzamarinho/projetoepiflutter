@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:projetoepi/Style/colors.dart';
 import 'package:projetoepi/Utils/mensage.dart';
 import 'package:projetoepi/Provider/cadastro/create_user.dart';
+import 'package:projetoepi/Widget/botao.dart';
 import 'package:provider/provider.dart';
 
-class ConfirmPassword extends StatelessWidget {
+class ConfirmPassword extends StatefulWidget {
   final String email;
   final String cpf;
 
   const ConfirmPassword({super.key, required this.email, required this.cpf});
 
   @override
+  State<ConfirmPassword> createState() => _ConfirmPasswordState();
+}
+
+class _ConfirmPasswordState extends State<ConfirmPassword> {
+  @override
   Widget build(BuildContext context) {
     TextEditingController passwordController = TextEditingController();
     TextEditingController confirmPasswordController = TextEditingController();
+
+    dispose() {
+      passwordController.clear();
+      confirmPasswordController.clear();
+      super.dispose();
+    }
 
     return Consumer<ValidarSenha>(builder: (context, validarsenha, _) {
       return Scaffold(
@@ -24,10 +35,10 @@ class ConfirmPassword extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Bem-Vindo $cpf'),
+              const Text('Bem-Vindo'),
               Container(
                 decoration: BoxDecoration(
-                  color: green,
+                  color: Colors.yellow,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -62,23 +73,27 @@ class ConfirmPassword extends StatelessWidget {
                 obscureText: true,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (passwordController.text !=
-                      confirmPasswordController.text) {
-                    showMessage(
-                        message: "As senhas devem ser iguais",
-                        context: context);
-                  } else {
-                    var cpfint = cpf.replaceAll(RegExp(r'[^0-9]'), '');
-                    validarsenha.createUser(
-                        email, passwordController.text, int.parse(cpfint));
-                    showMessage(
-                        message: validarsenha.msgErrorApi, context: context);
-                  }
-                },
-                child: const Text('Concluir'),
-              ),
+              customButton(
+                  tap: () async {
+                    if (passwordController.text !=
+                        confirmPasswordController.text) {
+                      showMessage(
+                          message: "As senhas devem ser iguais",
+                          context: context);
+                    } else {
+                      var cpfint = widget.cpf.replaceAll(RegExp(r'[^0-9]'), '');
+                      await validarsenha.createUser(widget.email,
+                          passwordController.text, int.parse(cpfint));
+                      showMessage(
+                          // ignore: use_build_context_synchronously
+                          message: validarsenha.msgErrorApi,
+                          // ignore: use_build_context_synchronously
+                          context: context);
+                    }
+                  },
+                  text: "Concluir",
+                  context: context,
+                  status: validarsenha.carregando)
             ],
           ),
         ),
