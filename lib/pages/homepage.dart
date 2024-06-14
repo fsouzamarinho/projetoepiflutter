@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                       await logar.logarUsuario(_email.text, _password.text, 0);
                       if (logar.logado) {
                         // ignore: use_build_context_synchronously
-                        Navigator.of(context).pushNamed('/dashboard');
+                        Navigator.of(context).pushNamed(logar.rota);
                       } else {
                         showMessage(
                             message: "Usuário ou senha inválidos",

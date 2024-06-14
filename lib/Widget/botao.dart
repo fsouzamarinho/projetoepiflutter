@@ -7,7 +7,7 @@ Widget customButton({
   String? text,
   BuildContext? context,
 }) {
-  return Container(
+  return SizedBox(
     width: MediaQuery.of(context!).size.width,
     child: Padding(
         padding: const EdgeInsets.all(8.0),
