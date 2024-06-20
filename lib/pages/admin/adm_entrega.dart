@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projetoepi/Widget/field.dart';
+import 'package:projetoepi/Provider/admin/entrega.dart';
+import 'package:provider/provider.dart';
 
 class AdmEntrega extends StatefulWidget {
   const AdmEntrega({super.key});
@@ -9,26 +10,39 @@ class AdmEntrega extends StatefulWidget {
 }
 
 class _AdmEntregaState extends State<AdmEntrega> {
-
-  final TextEditingController _data = TextEditingController();
-  
+  @override
+  void initState() {
+    Provider.of<EntregaProvider>(context, listen: false).fetchColaboradores();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Administrativo'),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              customTextField(
-                title: 'Email',
-                controller: _data,
-                hint: 'Data da entrega',
-                tipo: TextInputType.datetime),
-            ],
-          ),
-        ));
+      appBar: AppBar(
+          title: const Text('Cadastrar Entrega - Escolha o Colaborador')),
+      body: Consumer<EntregaProvider>(
+        builder: (context, dataProvider, _) {
+          if (dataProvider.carregando == true) {
+            return const Center(child: CircularProgressIndicator());
+          } else {}
+          return ListView.builder(
+            itemCount: dataProvider.colaboradores.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(dataProvider.colaboradores[index]['nomeCol']),
+                subtitle: Text(dataProvider.colaboradores[index]['email']),
+                onTap: () {
+                  dataProvider.setSelectedColaborador(
+                      dataProvider.colaboradores[index]['idCol'],
+                      dataProvider.colaboradores[index]['nomeCol']);
+                  Navigator.pushNamed(context, '/episentrega');
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

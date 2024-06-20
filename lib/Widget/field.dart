@@ -38,7 +38,13 @@ Widget customTextField(
           maxLines: maxLines,
           decoration: InputDecoration(hintText: hint, border: InputBorder.none),
           onChanged: funcao,
-          inputFormatters: formatacao
+          inputFormatters: formatacao,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+                return '* Preencha o campo';
+              }
+              return null;
+            }
         ),
       )
     ],
