@@ -30,8 +30,6 @@ class CadEpiProvider with ChangeNotifier {
       "qtd": 1
     };
 
-  print(requestBody);
-
     final response = await http.post(
       Uri.parse(url),
       headers: {

@@ -15,7 +15,8 @@ class AdminEpi extends StatefulWidget {
 class _AdminEpiState extends State<AdminEpi> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nome = TextEditingController();
-   final TextEditingController _instrucoes = TextEditingController();
+  final TextEditingController _instrucoes = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CadEpiProvider>(builder: (context, epiprovider, _){

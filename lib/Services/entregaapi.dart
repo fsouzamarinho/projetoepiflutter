@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:js';
 import 'package:intl/intl.dart';
 import 'package:projetoepi/Constrain/url.dart';
-import 'package:projetoepi/Utils/mensage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,17 +37,17 @@ class ApiServiceEntrega {
     }
   }
 
-  Future<void> cadastrar(
-    int idEpi,
+  Future<http.Response> cadastrar(
     int idCol,
+    int idEpi,
     String dataValidade,
     String dataEntrega,
   ) async {
     var dados = await SharedPreferences.getInstance();
     String? token = dados.getString("token");
 
-    String url = '${AppUrl.baseUrl}api/Epi';
-
+    String url = '${AppUrl.baseUrl}api/Entrega';
+  
     //converter data válidade
     DateFormat formatBrasil = DateFormat("dd/MM/yyyy");
     DateTime dataBrParse = formatBrasil.parse(dataValidade);
@@ -64,11 +62,14 @@ class ApiServiceEntrega {
     String dataAmericanaE = formatAmericano2.format(dataBrParse2);
 
     Map<String, dynamic> requestBody = {
+      "idEnt": 0,
       "dataValidade": dataAmericanaV,
       "dateEntrega": dataAmericanaE,
       "idEpi": idEpi,
       "idCol": idCol
     };
+
+  
 
     final response = await http.post(
       Uri.parse(url),
@@ -78,13 +79,28 @@ class ApiServiceEntrega {
       },
       body: jsonEncode(requestBody),
     );
-    
-    if (response.statusCode == 200) {
-  
-    } else {
-      print("nok");
-      throw Exception('Falha ao criar Entrega');
-    }
-    print(response.body);
+
+    return response;
+  }
+
+// Delete Colaborador
+  Future<http.Response> deleteColaborador(int idCol) async {
+    var dados = await SharedPreferences.getInstance();
+    String? token = dados.getString("token");
+    final response = await http.delete(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, Uri.parse('${AppUrl.baseUrl}api/Colaborador/$idCol'));
+    return response;
+  }
+
+  Future<http.Response> deleteEpi(int idEpi) async {
+    var dados = await SharedPreferences.getInstance();
+    String? token = dados.getString("token");
+    final response = await http.delete(headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, Uri.parse('${AppUrl.baseUrl}api//Epi/$idEpi'));
+    return response;
   }
 }

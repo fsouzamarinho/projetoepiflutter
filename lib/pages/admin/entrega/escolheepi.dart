@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projetoepi/Provider/admin/entrega.dart';
+import 'package:projetoepi/Utils/mensage.dart';
 import 'package:provider/provider.dart';
 
 class EpisScreen extends StatefulWidget {
@@ -14,6 +15,34 @@ class _EpisScreenState extends State<EpisScreen> {
   void initState() {
     Provider.of<EntregaProvider>(context, listen: false).fetchEpis();
     super.initState();
+  }
+
+  void _confirmDelete(BuildContext context, int idEpi) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Exclusão'),
+          content: const Text('Tem certeza de que deseja excluir este EPI?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await Provider.of<EntregaProvider>(context, listen: false)
+                    .deleteEpi(idEpi);
+              },
+              child: const Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -32,9 +61,20 @@ class _EpisScreenState extends State<EpisScreen> {
                   child: ListView.builder(
                     itemCount: dataProvider.epis.length,
                     itemBuilder: (context, index) {
+                      
+                      final epi = dataProvider.epis[index];
+
                       return ListTile(
                         title: Text(dataProvider.epis[index]['nomeEpi']),
                         subtitle: Text(dataProvider.epis[index]['insUso']),
+
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            _confirmDelete(context, epi['idEpi']);
+                          },
+                        ),
+
                         onTap: () {
                           dataProvider.setSelectedEpi(
                               dataProvider.epis[index]['idEpi']);

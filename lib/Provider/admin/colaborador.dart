@@ -37,18 +37,17 @@ class ColaboradorProvider with ChangeNotifier {
     DateFormat formatAmericano = DateFormat("yyyy-MM-dd");
     String dataAmericana = formatAmericano.format(dataBrParse);
 
+   int cpfparse  = int.parse(cpf);
+   int telefoneparse =   int.parse(telefone); 
+   
     Map<String, dynamic> requestBody = {
-      "idCol": 30,
       "nomeCol": nome,
       "ctps": ctps,
-      "telefone": int.parse(telefone),
-      "cpf": int.parse(cpf),
+      "telefone":cpfparse,
+      "cpf": telefoneparse,
       "email": email,
-      "dataAdmisão": dataAmericana,
+      "dataAdmisão": dataAmericana
     };
-
-    print(requestBody);
-
     final response = await http.post(
       Uri.parse(url),
       headers: {

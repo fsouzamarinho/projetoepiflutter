@@ -25,12 +25,12 @@ class _AdmFuncState extends State<AdmFunc> {
 
   @override
   void dispose() {
-    _nome.clear();
-    _ctps.clear();
-    _telefone.clear();
-    _cpf.clear();
-    _email.clear();
-    _dataAdmissao.clear();
+    // _nome.clear();
+    // _ctps.clear();
+    // _telefone.clear();
+    // _cpf.clear();
+    // _email.clear();
+    // _dataAdmissao.clear();
     super.dispose();
   }
 
@@ -92,7 +92,7 @@ class _AdmFuncState extends State<AdmFunc> {
                         ]),
                     customButton(
                         tap: () {
-                          if (_formKey.currentState!.validate()) {
+                          // if (_formKey.currentState!.validate()) {
                             colabprovider.cadastrar(
                               context,
                               _nome.text,
@@ -102,12 +102,12 @@ class _AdmFuncState extends State<AdmFunc> {
                               _email.text,
                               _dataAdmissao.text,
                             );
-                          } else {
-                            showMessage(
-                                message:
-                                    "Todos os campos devem ser preenchidos",
-                                context: context);
-                          }
+                          // } else {
+                          //   showMessage(
+                          //       message:
+                          //           "Todos os campos devem ser preenchidos",
+                          //       context: context);
+                          // }
                         },
                         text: "Concluir",
                         context: context,

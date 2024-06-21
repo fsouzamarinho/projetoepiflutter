@@ -12,6 +12,7 @@ class EntregaProvider with ChangeNotifier {
   String? dataValidade;
   String? dataEntrega;
   bool carregando = false;
+  bool sucesso = false;
 
   Future<void> fetchColaboradores() async {
     carregando = true;
@@ -28,19 +29,23 @@ class EntregaProvider with ChangeNotifier {
   }
 
   Future<void> criarEntrega() async {
-    if (selectedColaborador != null &&
-        selectedEpi != null &&
-        dataValidade != null &&
-        dataEntrega != null) {
     carregando = true;
-     carregando = true;
-      await apiService.cadastrar(
+    try {
+      final response = await apiService.cadastrar(
           selectedColaborador!, selectedEpi!, dataValidade!, dataEntrega!);
-      carregando = false;
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        sucesso = true;
+        carregando = false;
+        notifyListeners();
+      } else {
+        sucesso = false;
+        notifyListeners();
+      }
+    } catch (e) {
+      sucesso = false;
       notifyListeners();
     }
-
-  
   }
 
   void setSelectedColaborador(int idCol, String nome) {
@@ -62,5 +67,32 @@ class EntregaProvider with ChangeNotifier {
   void setDataEntrega(String entrega) {
     dataEntrega = entrega;
     notifyListeners();
+  }
+
+  //Delete colaborador
+  Future<void> deleteColaborador(int idCol) async {
+    carregando = true;
+    final response = await apiService.deleteColaborador(idCol);
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      colaboradores.removeWhere((colaborador) => colaborador['idCol'] == idCol);
+      notifyListeners();
+    } else {
+      throw Exception('Falha ao excluir Colaborador');
+    }
+    carregando = false;
+    notifyListeners();
+  }
+
+//Deleta Epi
+  Future<bool> deleteEpi(int idEpi) async {
+    final response = await apiService.deleteEpi(idEpi);
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      epis.removeWhere((epi) => epi['idEpi'] == idEpi);
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

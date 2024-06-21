@@ -56,10 +56,18 @@ class EntregaScreen extends StatelessWidget {
                         dataProvider.setDataValidade(_dataValidade.text);
                         dataProvider.setDataEntrega(_dataEntrega.text);
                         await dataProvider.criarEntrega();
-                        showMessage(
-                            message: "Entrega criada com sucesso",
-                            // ignore: use_build_context_synchronously
-                            context: context);
+
+                        if (dataProvider.sucesso == true) {
+                          showMessage(
+                              message: "Entrega criada com sucesso",
+                              // ignore: use_build_context_synchronously
+                              context: context);
+                        } else {
+                          showMessage(
+                              message: "Erro ao cadastrar Entrega",
+                              // ignore: use_build_context_synchronously
+                              context: context);
+                        }
                       }
                     },
                     context: context)
